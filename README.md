@@ -224,7 +224,5 @@ curl -X POST http://localhost:5000/api/readings \
 ## Licenta
 
 <<<<<<< HEAD
-Proiect academic — Universitatea Politehnica Bucuresti, 2024-2025
-=======
 Proiect academic — Universitatea Politehnica București, 2025–2026
->>>>>>> 46b3dd621702f5c9459ed6213c8bdc8b33dca64b
+
