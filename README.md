@@ -2,7 +2,6 @@
 
 **Lucrare de licență** | Autor: Dobrinoiu David | Grupa 341C5  
 Facultatea de Automatică și Calculatoare — Universitatea Politehnica București  
-Coordonator: Prof. dr. ...
 
 ---
 
