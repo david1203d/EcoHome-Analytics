@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoHome Analytics</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1117;--card:#161b22;--border:#30363d;
+  --teal:#00d4aa;--purple:#7c6af7;--green:#3fb950;
+  --orange:#f0a500;--red:#f85149;--blue:#58a6ff;
+  --text:#e6edf3;--muted:#7d8590;--muted2:#484f58;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px}
+
+/* HEADER */
+header{
+  background:var(--card);border-bottom:1px solid var(--border);
+  padding:0 32px;height:56px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+}
+.logo{font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.logo em{color:var(--teal);font-style:normal}
+.logo span{color:var(--muted);font-weight:400;font-size:13px;margin-left:8px}
+.header-right{display:flex;align-items:center;gap:12px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+#last-updated{font-size:12px;color:var(--muted)}
+.btn{background:transparent;border:1px solid var(--border);color:var(--text);
+  padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;
+  transition:all 0.2s}
+.btn:hover{border-color:var(--teal);color:var(--teal)}
+
+/* MAIN */
+main{padding:24px 32px;max-width:1440px;margin:0 auto}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.kpi{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:20px 22px;position:relative;overflow:hidden;transition:transform 0.2s;
+}
+.kpi:hover{transform:translateY(-2px)}
+.kpi::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0;
+}
+.kpi.c-teal::after{background:var(--teal)}
+.kpi.c-green::after{background:var(--green)}
+.kpi.c-purple::after{background:var(--purple)}
+.kpi.c-red::after{background:var(--red)}
+.kpi-icon{font-size:24px;margin-bottom:10px}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.kpi-value{font-size:34px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi.c-teal .kpi-value{color:var(--teal)}
+.kpi.c-green .kpi-value{color:var(--green)}
+.kpi.c-purple .kpi-value{color:var(--purple)}
+.kpi.c-red .kpi-value{color:var(--red)}
+.kpi-sub{font-size:11px;color:var(--muted)}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:20px}
+
+/* BOTTOM ROW */
+.bottom-row{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:20px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.card-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.card-title{font-size:13px;font-weight:600;color:var(--text)}
+.tag{
+  font-size:10px;padding:2px 8px;border-radius:10px;font-family:monospace;
+  background:rgba(0,212,170,0.08);color:var(--teal);border:1px solid rgba(0,212,170,0.2);
+}
+.tag.purple{background:rgba(124,106,247,0.08);color:var(--purple);border-color:rgba(124,106,247,0.2)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{
+  text-align:left;padding:6px 10px;color:var(--muted);font-weight:500;
+  font-size:10px;text-transform:uppercase;letter-spacing:0.5px;
+  border-bottom:1px solid var(--border);
+}
+.tbl td{padding:10px;border-bottom:1px solid rgba(48,54,61,0.4)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,0.02)}
+.type-badge{
+  display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;
+  background:rgba(88,166,255,0.1);color:var(--blue);border:1px solid rgba(88,166,255,0.2);
+}
+.bar-wrap{display:flex;align-items:center;gap:8px}
+.bar-bg{flex:1;max-width:80px;height:4px;background:var(--border);border-radius:2px}
+.bar-fill{height:4px;background:var(--teal);border-radius:2px;transition:width 0.6s}
+.cost{color:var(--orange);font-weight:500}
+
+/* ALERTS */
+.alert-card{
+  padding:12px 14px;border-radius:8px;margin-bottom:8px;
+  border-left:3px solid;display:flex;flex-direction:column;gap:4px;
+}
+.alert-card.warning{background:rgba(240,165,0,0.07);border-color:var(--orange)}
+.alert-card.critical{background:rgba(248,81,73,0.07);border-color:var(--red)}
+.alert-card.info{background:rgba(88,166,255,0.07);border-color:var(--blue)}
+.alert-name{font-size:12px;font-weight:600}
+.alert-msg{font-size:11px;color:var(--muted);line-height:1.4}
+.alert-meta{font-size:10px;color:var(--muted2);display:flex;justify-content:space-between;align-items:center}
+.resolve-btn{
+  font-size:10px;padding:2px 8px;border-radius:4px;cursor:pointer;
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  transition:all 0.2s;
+}
+.resolve-btn:hover{border-color:var(--green);color:var(--green)}
+.no-data{color:var(--muted);font-size:12px;text-align:center;padding:24px 0}
+.check{color:var(--green);font-size:20px;display:block;margin-bottom:6px}
+
+/* DB FEATURES */
+.db-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.db-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.db-badge{
+  font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid;
+  font-family:monospace;
+}
+.db-badge.pg{background:rgba(0,212,170,0.07);color:var(--teal);border-color:rgba(0,212,170,0.25)}
+.db-badge.sql{background:rgba(124,106,247,0.07);color:var(--purple);border-color:rgba(124,106,247,0.25)}
+.db-badge.idx{background:rgba(240,165,0,0.07);color:var(--orange);border-color:rgba(240,165,0,0.25)}
+
+/* FOOTER */
+footer{
+  text-align:center;padding:20px;color:var(--muted2);font-size:11px;
+  border-top:1px solid var(--border);
+}
+
+/* LOADING SHIMMER */
+.shimmer{
+  background:linear-gradient(90deg,var(--card) 25%,var(--border) 50%,var(--card) 75%);
+  background-size:200% 100%;animation:shimmer 1.5s infinite;
+  border-radius:4px;height:20px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+canvas{width:100%!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <em>EcoHome</em> Analytics
+    <span>Sistem de monitorizare energie</span>
+  </div>
+  <div class="header-right">
+    <div class="live-dot"></div>
+    <span id="last-updated">Se incarca...</span>
+    <button class="btn" onclick="loadAll()">&#8635; Refresh</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi c-teal">
+      <div class="kpi-icon">&#9889;</div>
+      <div class="kpi-label">Consum ultimele 24h</div>
+      <div class="kpi-value" id="kwh-24h">--</div>
+      <div class="kpi-sub">kWh total</div>
+    </div>
+    <div class="kpi c-green">
+      <div class="kpi-icon">&#128181;</div>
+      <div class="kpi-label">Cost ultimele 24h</div>
+      <div class="kpi-value" id="cost-24h">--</div>
+      <div class="kpi-sub">RON (1.19 RON/kWh)</div>
+    </div>
+    <div class="kpi c-purple">
+      <div class="kpi-icon">&#128268;</div>
+      <div class="kpi-label">Dispozitive active</div>
+      <div class="kpi-value" id="dev-count">--</div>
+      <div class="kpi-sub">monitorizate in timp real</div>
+    </div>
+    <div class="kpi c-red">
+      <div class="kpi-icon">&#128680;</div>
+      <div class="kpi-label">Alerte active</div>
+      <div class="kpi-value" id="alert-count">--</div>
+      <div class="kpi-sub" id="alert-sub">necesita atentie</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Consum pe ore — ultimele 24h</span>
+        <span class="tag">date_trunc('hour', recorded_at)</span>
+      </div>
+      <canvas id="hourlyChart" height="220"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Consum per camera</span>
+        <span class="tag">GROUP BY rooms.name</span>
+      </div>
+      <canvas id="roomChart" height="220"></canvas>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom-row">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Top dispozitive dupa consum (24h)</span>
+        <span class="tag purple">ORDER BY SUM(energy_kwh) DESC</span>
+      </div>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Dispozitiv</th>
+            <th>Tip</th>
+            <th>Camera</th>
+            <th>Consum kWh</th>
+            <th>Cost RON</th>
+          </tr>
+        </thead>
+        <tbody id="dev-table">
+          <tr><td colspan="5" class="no-data">Se incarca...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Alerte active</span>
+        <span id="alert-badge" class="tag"></span>
+      </div>
+      <div id="alerts-panel"><div class="no-data">Se incarca...</div></div>
+    </div>
+  </div>
+
+  <!-- DB FEATURES -->
+  <div class="db-section">
+    <div class="card-head" style="margin-bottom:0;border:none;padding-bottom:0">
+      <span class="card-title">&#128190; Functionalitati PostgreSQL utilizate in aceasta aplicatie</span>
+    </div>
+    <div class="db-grid">
+      <span class="db-badge pg">Generated Columns (cost_ron, current_a)</span>
+      <span class="db-badge sql">Window Functions — moving average 7 zile</span>
+      <span class="db-badge idx">Composite Index (device_id, recorded_at DESC)</span>
+      <span class="db-badge sql">CTEs — WITH daily AS (...)</span>
+      <span class="db-badge pg">Views — vw_room_consumption_24h</span>
+      <span class="db-badge idx">Partial aggregation cu date_trunc</span>
+      <span class="db-badge sql">ON CONFLICT DO NOTHING — upsert</span>
+      <span class="db-badge pg">CHECK constraints pe tabele</span>
+      <span class="db-badge sql">JOIN multi-nivel (3 tabele)</span>
+      <span class="db-badge pg">BIGSERIAL pentru time-series la scara</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  EcoHome Analytics &mdash; Dobrinoiu David | Grupa 341C5 | UPB ACS 2024-2025
+  &nbsp;&middot;&nbsp; Flask + PostgreSQL + Chart.js
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+Chart.defaults.color = '#7d8590';
+Chart.defaults.borderColor = '#30363d';
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+let hourlyChart = null;
+let roomChart   = null;
+
+const COLORS = ['#00d4aa','#7c6af7','#3fb950','#f0a500','#58a6ff','#f85149','#e85d04'];
+
+async function get(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Eroare ' + r.status);
+  return r.json();
+}
+
+async function loadSummary() {
+  const d = await get('/api/summary');
+  document.getElementById('kwh-24h').textContent    = d.last_24h.kwh.toFixed(1);
+  document.getElementById('cost-24h').textContent   = d.last_24h.cost_ron.toFixed(2);
+  document.getElementById('dev-count').textContent  = d.total_devices;
+  document.getElementById('alert-count').textContent = d.active_alerts;
+  if (d.active_alerts === 0) {
+    document.getElementById('alert-count').style.color = '#3fb950';
+    document.getElementById('alert-sub').textContent = 'totul in regula';
+  } else {
+    document.getElementById('alert-count').style.color = '#f85149';
+    document.getElementById('alert-sub').textContent = 'necesita atentie';
+  }
+}
+
+async function loadHourlyChart() {
+  const data = await get('/api/consumption/hourly?hours=24');
+  const labels = data.map(d => {
+    const h = new Date(d.hour);
+    return String(h.getUTCHours()).padStart(2,'0') + ':00';
+  });
+
+  if (hourlyChart) { hourlyChart.destroy(); hourlyChart = null; }
+
+  hourlyChart = new Chart(document.getElementById('hourlyChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'kWh',
+        data: data.map(d => d.kwh),
+        borderColor: '#00d4aa',
+        backgroundColor: 'rgba(0,212,170,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#00d4aa',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#30363d' } },
+        y: { grid: { color: '#30363d' }, beginAtZero: true,
+             ticks: { callback: v => v.toFixed(2) + ' kWh' } }
+      }
+    }
+  });
+}
+
+async function loadRoomChart() {
+  const data = await get('/api/summary/by-room?hours=24');
+  if (roomChart) { roomChart.destroy(); roomChart = null; }
+
+  roomChart = new Chart(document.getElementById('roomChart'), {
+    type: 'doughnut',
+    data: {
+      labels: data.map(d => d.room),
+      datasets: [{
+        data: data.map(d => d.kwh),
+        backgroundColor: COLORS,
+        borderColor: '#161b22',
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 14, font: { size: 11 }, color: '#7d8590' }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.parsed.toFixed(2)} kWh`
+          }
+        }
+      }
+    }
+  });
+}
+
+async function loadDeviceTable() {
+  const data = await get('/api/summary/by-device?hours=24&limit=8');
+  const maxKwh = Math.max(...data.map(d => d.kwh), 0.001);
+  const tbody = document.getElementById('dev-table');
+
+  if (data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="no-data">Nicio citire in ultimele 24h</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(d => {
+    const pct = Math.round((d.kwh / maxKwh) * 100);
+    return `<tr>
+      <td><strong>${d.device_name}</strong></td>
+      <td><span class="type-badge">${d.device_type}</span></td>
+      <td>${d.room_name}</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+          <span>${d.kwh.toFixed(3)}</span>
+        </div>
+      </td>
+      <td class="cost">${d.cost_ron.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadAlerts() {
+  const data = await get('/api/alerts');
+  const panel = document.getElementById('alerts-panel');
+  const badge = document.getElementById('alert-badge');
+
+  badge.textContent = data.length + ' active';
+
+  if (data.length === 0) {
+    panel.innerHTML = '<div class="no-data"><span class="check">&#10003;</span>Nicio alerta activa</div>';
+    return;
+  }
+
+  panel.innerHTML = data.slice(0, 6).map(a => `
+    <div class="alert-card ${a.severity}" id="alert-${a.id}">
+      <div class="alert-name">${a.alert_type.replace(/_/g,' ').toUpperCase()}</div>
+      <div class="alert-msg">${a.message}</div>
+      <div class="alert-meta">
+        <span>${new Date(a.created_at).toLocaleString('ro-RO')}</span>
+        <button class="resolve-btn" onclick="resolveAlert(${a.id})">Rezolva</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function resolveAlert(id) {
+  await fetch('/api/alerts/' + id + '/resolve', { method: 'POST' });
+  document.getElementById('alert-' + id).style.opacity = '0.3';
+  setTimeout(() => loadAlerts(), 600);
+}
+
+async function loadAll() {
+  document.getElementById('last-updated').textContent =
+    'Actualizat: ' + new Date().toLocaleTimeString('ro-RO');
+  try {
+    await Promise.all([
+      loadSummary(),
+      loadHourlyChart(),
+      loadRoomChart(),
+      loadDeviceTable(),
+      loadAlerts(),
+    ]);
+  } catch(e) {
+    console.error('Eroare la incarcare:', e);
+  }
+}
+
+loadAll();
+setInterval(loadAll, 60000);
+</script>
+</body>
+</html>

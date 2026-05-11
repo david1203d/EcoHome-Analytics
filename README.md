@@ -1,21 +1,15 @@
-# Sistem de Evidenta si Analiza a Consumului de Energie intr-o Locuinta Inteligenta
+# EcoHome Analytics — Sistem de Evidenta si Analiza a Consumului de Energie
 
-**Lucrare de licenta** | Autor: Dobrinoiu David | Grupa 341C5  
-Facultatea de Automatica si Calculatoare — Universitatea Politehnica Bucuresti 
+**Lucrare de licenta** | Autor: Dobrinoiu David | Grupa 341C5
+Facultatea de Automatica si Calculatoare — Universitatea Politehnica Bucuresti
 
 ---
 
 ## Descriere
 
-Aplicatia colecteaza (sau simuleaza) date despre consumul de energie al dispozitivelor
-dintr-o locuinta inteligenta. Datele sunt stocate intr-o baza de date relationala PostgreSQL,
-analizate prin interogari SQL optimizate si vizualizate in Grafana prin dashboard-uri interactive.
+EcoHome Analytics este o aplicatie web completa pentru monitorizarea, analiza si optimizarea consumului de energie intr-o locuinta inteligenta. Datele sunt simulate realist, stocate in PostgreSQL si prezentate printr-un dashboard web interactiv si dashboards Grafana.
 
-Accentul este pus pe:
-- Modelarea corecta a datelor (ER diagram, constrangeri, view-uri)
-- Performanta interogarilor (indecsi pe coloane temporale)
-- Generarea realista de date prin simulare (profiluri orare + zgomot gaussian)
-- API REST curat pentru integrarea cu Grafana
+Aplicatia nu se limiteaza la vizualizare — genereaza **recomandari personalizate**, detecteaza **anomalii de consum** direct in PostgreSQL, calculeaza **amprenta de carbon** si compara consumul saptamanal pentru a oferi utilizatorului informatii actionabile.
 
 ---
 
@@ -31,25 +25,59 @@ Accentul este pus pe:
 |  Flask REST API     | <--------------------------+
 |  /api/*             |
 +----------+----------+
-           |  JSON
-+----------v----------+   PostgreSQL   +----------------------+
-|  Grafana            | <------------- |   PostgreSQL         |
-|  Dashboards         |   datasource   |   (aceeasi instanta) |
-+---------------------+                +----------------------+
+           |
+    +------+-------+
+    |              |
++---v----+   +-----v------+
+|Dashboard|  |  Grafana   |
+|Web      |  |  Dashboard |
+|(port    |  |(port 3000) |
+| 5000)   |  +------------+
++---------+
 ```
 
 ---
 
 ## Tehnologii
 
-| Componenta       | Tehnologie              | Versiune |
-|------------------|-------------------------|----------|
-| Backend API      | Python Flask            | 3.0.3    |
-| ORM              | SQLAlchemy              | 2.0.30   |
-| Baza de date     | PostgreSQL              | 16+      |
-| Vizualizare      | Grafana                 | 11+      |
-| Simulare date    | Python (psycopg2)       | 3.11+    |
-| Driver BD        | psycopg2-binary         | 2.9.9    |
+| Componenta       | Tehnologie          | Versiune |
+|------------------|---------------------|----------|
+| Backend API      | Python Flask        | 3.0.3    |
+| ORM              | SQLAlchemy          | 2.0.30   |
+| Baza de date     | PostgreSQL          | 16+      |
+| Vizualizare web  | Chart.js            | 4.4.0    |
+| Vizualizare BI   | Grafana             | 11+      |
+| Simulare date    | Python (psycopg2)   | 3.11+    |
+
+---
+
+## Functionalitati implementate
+
+### Core
+- [x] Schema PostgreSQL completa: 4 tabele, indecsi compusi, coloane generate, view-uri
+- [x] Flask REST API cu 17 endpoint-uri
+- [x] Simulator date cu profiluri orare realiste per tip dispozitiv
+- [x] Dashboard web interactiv (dark theme, Chart.js, auto-refresh 60s)
+- [x] Dashboards Grafana conectate direct la PostgreSQL
+
+### Analiza avansata (elemente de unicitate)
+- [x] **Anomaly Detection** — detectie anomalii cu Z-score calculat in PostgreSQL
+- [x] **Room Efficiency Score** — kWh/m² cu RANK() window function
+- [x] **Carbon Footprint** — amprenta CO2 cu factor Romania (0.287 kg/kWh, ENTSO-E 2023)
+- [x] **Smart Recommendations** — sfaturi personalizate generate din date reale
+- [x] **Comparatie saptamanala** — CTE + FULL OUTER JOIN intre perioade
+
+### Functionalitati PostgreSQL utilizate
+- Generated Columns (cost_ron, current_a calculate automat)
+- Window Functions (RANK, AVG OVER, moving average 7 zile)
+- Composite Indexes (device_id, recorded_at DESC)
+- CTEs — WITH daily AS (...)
+- FULL OUTER JOIN pentru comparatii temporale
+- Statistical functions (AVG, STDDEV pentru Z-score)
+- date_trunc pentru agregari time-series
+- ON CONFLICT DO NOTHING (upsert bulk)
+- CHECK constraints pe toate tabelele
+- Views (vw_room_consumption_24h, vw_hourly_consumption)
 
 ---
 
@@ -57,60 +85,42 @@ Accentul este pus pe:
 
 ```
 EcoHome-Analytics/
-|-- app.py              # Flask app principal - toate endpoint-urile REST
-|-- models.py           # Modele SQLAlchemy (Room, Device, EnergyReading, Alert)
-|-- config.py           # Configuratie (DB, cheie secreta)
-|-- requirements.txt    # Dependente Python
-|-- .env.example        # Template variabile de mediu
+|-- app.py               # Flask app — 17 endpoint-uri REST
+|-- models.py            # Modele SQLAlchemy
+|-- config.py            # Configuratie DB
+|-- requirements.txt
+|-- .env.example
+|
+|-- templates/
+|   `-- index.html       # Dashboard web interactiv
 |
 |-- sql/
-|   `-- schema.sql      # Schema completa PostgreSQL (tabele, indecsi, view-uri, seed)
+|   `-- schema.sql       # Schema PostgreSQL completa
 |
-`-- scripts/
-    `-- simulator.py    # Script simulare date (mod istoric + mod live)
-```
-
----
-
-## Model de date (ER)
-
-```
-rooms ---------------------- devices ---------------- energy_readings
-  id PK                       id PK                    id PK
-  name                        room_id FK               device_id FK
-  floor                       name                     recorded_at
-  area_sqm                    type                     power_watts
-  created_at                  brand                    energy_kwh
-                              power_rating_watts       cost_ron (generat)
-                              is_active                voltage_v
-                              installed_at             current_a (generat)
-                              created_at
-                                  |
-                                  +---------------- alerts
-                                                     id PK
-                                                     device_id FK
-                                                     alert_type
-                                                     severity
-                                                     message
-                                                     resolved
-```
-
-**Indecsi de performanta:**
-```sql
-CREATE INDEX idx_readings_device_time ON energy_readings (device_id, recorded_at DESC);
-CREATE INDEX idx_readings_time        ON energy_readings (recorded_at DESC);
+|-- scripts/
+|   `-- simulator.py     # Simulator date (mod istoric + live)
+|
+|-- diagrams/
+|   |-- use_case.svg
+|   |-- class_diagram.svg
+|   |-- er_diagram.svg
+|   |-- architecture.svg
+|   `-- sequence.svg
+|
+`-- grafana-dashboards/
+    `-- ecohome_dashboard.json
 ```
 
 ---
 
 ## Instalare si rulare
 
-### 1. Cerinte prealabile
+### 1. Cerinte
 - Python 3.11+
 - PostgreSQL 16+
-- Grafana 11+ (optional, pentru vizualizare)
+- Grafana 11+ (optional)
 
-### 2. Clonare si setup Python
+### 2. Setup
 
 ```bash
 git clone https://github.com/david1203d/EcoHome-Analytics.git
@@ -121,107 +131,102 @@ venv\Scripts\activate
 pip install -r requirements.txt
 
 copy .env.example .env
-# Editeaza .env cu datele tale PostgreSQL
+# Editeaza .env cu parola ta PostgreSQL
 ```
 
-### 3. Initializare baza de date
+### 3. Baza de date
 
 ```bash
 psql -U postgres -c "CREATE DATABASE smart_home;"
 psql -U postgres -d smart_home -f sql/schema.sql
 ```
 
-### 4. Generare date simulate (30 zile)
+### 4. Generare date simulate
 
 ```bash
-# Date istorice - ultimele 30 zile, citire la 5 minute
 python scripts/simulator.py --days 30 --interval 5
-
-# Mod live (o citire la fiecare 5 min, ruleaza continuu)
-python scripts/simulator.py --live --interval 5
 ```
 
-### 5. Pornire Flask API
+### 5. Pornire aplicatie
 
 ```bash
 python app.py
-# API disponibil la http://localhost:5000
 ```
 
-### 6. Configurare Grafana
+Dashboard web: **http://localhost:5000**
 
-1. Adauga datasource: **PostgreSQL** -> `localhost:5432 / smart_home`
-2. Interogare exemplu pentru consum orar:
-```sql
-SELECT
-  date_trunc('hour', recorded_at) AS time,
-  SUM(energy_kwh) AS "Consum (kWh)"
-FROM energy_readings
-JOIN devices ON devices.id = energy_readings.device_id
-WHERE $__timeFilter(recorded_at)
-GROUP BY 1
-ORDER BY 1
-```
+### 6. Grafana (optional)
+
+1. Instaleaza Grafana de la grafana.com
+2. Adauga datasource PostgreSQL: `localhost:5432 / smart_home`
+3. Importa `grafana-dashboards/ecohome_dashboard.json`
 
 ---
 
 ## API Endpoints
 
-| Metoda | Endpoint                          | Descriere                        |
-|--------|-----------------------------------|----------------------------------|
-| GET    | `/`                               | Status API                       |
-| GET    | `/api/rooms`                      | Lista camere                     |
-| GET    | `/api/devices`                    | Lista dispozitive (cu filtre)    |
-| GET    | `/api/devices/<id>`               | Detalii + consum lunar           |
-| GET    | `/api/devices/<id>/readings`      | Citiri dispozitiv (?hours=24)    |
-| GET    | `/api/readings`                   | Ultimele citiri globale          |
-| POST   | `/api/readings`                   | Adauga citire noua               |
-| GET    | `/api/summary`                    | Sumar 24h / 7 zile / luna        |
-| GET    | `/api/summary/by-room`            | Consum agregat pe camera         |
-| GET    | `/api/summary/by-type`            | Consum agregat pe tip            |
-| GET    | `/api/alerts`                     | Alerte active                    |
-| POST   | `/api/alerts/<id>/resolve`        | Marcheaza alerta ca rezolvata    |
+### Date de baza
+| Metoda | Endpoint                     | Descriere                     |
+|--------|------------------------------|-------------------------------|
+| GET    | `/`                          | Dashboard web                 |
+| GET    | `/api/rooms`                 | Lista camere                  |
+| GET    | `/api/devices`               | Lista dispozitive             |
+| GET    | `/api/devices/<id>`          | Detalii + consum lunar        |
+| GET    | `/api/devices/<id>/readings` | Citiri dispozitiv             |
+| GET    | `/api/readings`              | Ultimele citiri globale       |
+| POST   | `/api/readings`              | Adauga citire noua            |
 
----
+### Sumar si agregari
+| Metoda | Endpoint                     | Descriere                     |
+|--------|------------------------------|-------------------------------|
+| GET    | `/api/summary`               | Sumar 24h / 7 zile / luna     |
+| GET    | `/api/summary/by-room`       | Consum agregat pe camera      |
+| GET    | `/api/summary/by-type`       | Consum agregat pe tip         |
+| GET    | `/api/summary/by-device`     | Top dispozitive dupa consum   |
+| GET    | `/api/consumption/hourly`    | Consum orar (time series)     |
 
-## Functionalitati implementate
+### Analiza avansata
+| Metoda | Endpoint                     | Descriere                     |
+|--------|------------------------------|-------------------------------|
+| GET    | `/api/anomalies`             | Detectie anomalii (Z-score)   |
+| GET    | `/api/efficiency`            | Scor eficienta camere (kWh/m²)|
+| GET    | `/api/carbon`                | Amprenta carbon (kg CO2)      |
+| GET    | `/api/recommendations`       | Recomandari personalizate     |
+| GET    | `/api/comparison`            | Comparatie saptamanala        |
+| GET    | `/api/trends`                | Trend 30 zile + moving avg    |
 
-- [x] Schema PostgreSQL completa cu constrangeri, indecsi si coloane calculate
-- [x] View-uri SQL pentru Grafana (consum orar, pe camera)
-- [x] Modele SQLAlchemy (ORM)
-- [x] Flask REST API cu 11 endpoint-uri
-- [x] Simulator date cu profiluri orare realiste per tip dispozitiv
-- [x] Detectie automata consum anormal si generare alerte
-- [x] Calcul cost automat (RON) prin coloana generata PostgreSQL
-- [x] Calcul curent (A) prin coloana generata PostgreSQL
-
-## In lucru / urmeaza
-
-- [ ] Dashboard-uri Grafana (JSON exportat)
-- [ ] Endpoint /api/recommendations - sugestii optimizare consum
-- [ ] Autentificare JWT pentru API
-- [ ] Grafic consum prognozat (trend analysis)
+### Alerte
+| Metoda | Endpoint                          | Descriere              |
+|--------|-----------------------------------|------------------------|
+| GET    | `/api/alerts`                     | Alerte active          |
+| POST   | `/api/alerts/<id>/resolve`        | Rezolva alerta         |
 
 ---
 
 ## Exemple cereri API
 
 ```bash
-# Sumar general
-curl http://localhost:5000/api/summary
+# Dashboard principal
+curl http://localhost:5000/
 
-# Dispozitive dintr-o camera
-curl "http://localhost:5000/api/devices?room_id=1"
+# Anomalii detectate
+curl http://localhost:5000/api/anomalies
 
-# Adauga citire manuala
-curl -X POST http://localhost:5000/api/readings \
-  -H "Content-Type: application/json" \
-  -d '{"device_id": 1, "power_watts": 95.5}'
+# Eficienta camere
+curl http://localhost:5000/api/efficiency
+
+# Amprenta carbon
+curl http://localhost:5000/api/carbon
+
+# Recomandari personalizate
+curl http://localhost:5000/api/recommendations
+
+# Comparatie saptamanala
+curl http://localhost:5000/api/comparison
 ```
 
 ---
 
 ## Licenta
 
-Proiect academic — Universitatea Politehnica București, 2025–2026
-
+Proiect academic — Universitatea Politehnica Bucuresti, 2025-2026
