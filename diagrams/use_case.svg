@@ -1,0 +1,59 @@
+<svg width="680" height="500" viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Diagrama Use Case - EcoHome Analytics</title>
+<desc>Use case diagram pentru EcoHome Analytics cu actorii Utilizator si Simulator Python</desc>
+
+<rect width="680" height="500" fill="white"/>
+
+<!-- System boundary -->
+<rect x="140" y="35" width="400" height="432" rx="4" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 3"/>
+<text x="340" y="57" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#111">EcoHome Analytics</text>
+
+<!-- UC1 -->
+<ellipse cx="340" cy="100" rx="105" ry="18" fill="#f4f4f4" stroke="#888" stroke-width="0.8"/>
+<text x="340" y="100" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="12" fill="#222">Vizualizeaza consum camere</text>
+
+<!-- UC2 -->
+<ellipse cx="340" cy="170" rx="105" ry="18" fill="#f4f4f4" stroke="#888" stroke-width="0.8"/>
+<text x="340" y="170" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="12" fill="#222">Vizualizeaza sumar consum</text>
+
+<!-- UC3 -->
+<ellipse cx="340" cy="245" rx="105" ry="18" fill="#f4f4f4" stroke="#888" stroke-width="0.8"/>
+<text x="340" y="245" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="12" fill="#222">Gestioneaza alerte</text>
+
+<!-- Separator -->
+<line x1="175" y1="295" x2="505" y2="295" stroke="#ccc" stroke-width="0.5" stroke-dasharray="4 3"/>
+
+<!-- UC4 -->
+<ellipse cx="340" cy="345" rx="105" ry="18" fill="#f4f4f4" stroke="#888" stroke-width="0.8"/>
+<text x="340" y="345" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="12" fill="#222">Genereaza date simulate</text>
+
+<!-- UC5 -->
+<ellipse cx="340" cy="420" rx="105" ry="18" fill="#f4f4f4" stroke="#888" stroke-width="0.8"/>
+<text x="340" y="420" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="12" fill="#222">Detecteaza consum anormal</text>
+
+<!-- Actor: Utilizator -->
+<circle cx="72" cy="110" r="12" fill="none" stroke="#555" stroke-width="1.2"/>
+<line x1="72" y1="122" x2="72" y2="152" stroke="#555" stroke-width="1.2"/>
+<line x1="52" y1="135" x2="92" y2="135" stroke="#555" stroke-width="1.2"/>
+<line x1="72" y1="152" x2="57" y2="172" stroke="#555" stroke-width="1.2"/>
+<line x1="72" y1="152" x2="87" y2="172" stroke="#555" stroke-width="1.2"/>
+<text x="72" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Utilizator</text>
+
+<!-- Connections: Utilizator -->
+<line x1="84" y1="128" x2="235" y2="100" stroke="#999" stroke-width="0.8"/>
+<line x1="84" y1="136" x2="235" y2="170" stroke="#999" stroke-width="0.8"/>
+<line x1="84" y1="144" x2="235" y2="245" stroke="#999" stroke-width="0.8"/>
+
+<!-- Actor: Simulator Python -->
+<circle cx="608" cy="110" r="12" fill="none" stroke="#555" stroke-width="1.2"/>
+<line x1="608" y1="122" x2="608" y2="152" stroke="#555" stroke-width="1.2"/>
+<line x1="588" y1="135" x2="628" y2="135" stroke="#555" stroke-width="1.2"/>
+<line x1="608" y1="152" x2="593" y2="172" stroke="#555" stroke-width="1.2"/>
+<line x1="608" y1="152" x2="623" y2="172" stroke="#555" stroke-width="1.2"/>
+<text x="608" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Simulator Python</text>
+
+<!-- Connections: Simulator -->
+<line x1="596" y1="132" x2="445" y2="345" stroke="#999" stroke-width="0.8"/>
+<line x1="596" y1="140" x2="445" y2="420" stroke="#999" stroke-width="0.8"/>
+
+</svg>

@@ -1,0 +1,131 @@
+<svg width="680" height="445" viewBox="0 0 680 445" xmlns="http://www.w3.org/2000/svg">
+<title>Diagrama ER - EcoHome Analytics</title>
+<rect width="680" height="445" fill="white"/>
+
+<rect x="12" y="20" width="280" height="122" rx="6" fill="white" stroke="#1D9E75" stroke-width="1.2"/>
+<rect x="13" y="20" width="278" height="29" rx="6" fill="#1D9E75"/>
+<rect x="13" y="38" width="278" height="11" fill="#1D9E75"/>
+<text x="152" y="35" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">rooms</text>
+<rect x="13" y="49" width="278" height="20" fill="#E1F5EE"/>
+<text x="21" y="59" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#085041">id</text>
+<text x="130" y="59" dominant-baseline="central" font-family="Arial" font-size="10" fill="#0F6E56">serial</text>
+<text x="275" y="59" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#085041">PK</text>
+<rect x="13" y="69" width="278" height="18" fill="#f8f8f8"/>
+<text x="21" y="78" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">name</text>
+<text x="130" y="78" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">varchar(100)</text>
+<rect x="13" y="87" width="278" height="18" fill="#f2f2f2"/>
+<text x="21" y="96" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">floor</text>
+<text x="130" y="96" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">integer</text>
+<rect x="13" y="105" width="278" height="18" fill="#f8f8f8"/>
+<text x="21" y="114" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">area_sqm</text>
+<text x="130" y="114" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">float</text>
+<rect x="13" y="123" width="278" height="18" fill="#f2f2f2"/>
+<text x="21" y="132" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">created_at</text>
+<text x="130" y="132" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">timestamp</text>
+
+<rect x="388" y="20" width="280" height="158" rx="6" fill="white" stroke="#534AB7" stroke-width="1.2"/>
+<rect x="389" y="20" width="278" height="29" rx="6" fill="#534AB7"/>
+<rect x="389" y="38" width="278" height="11" fill="#534AB7"/>
+<text x="528" y="35" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">devices</text>
+<rect x="389" y="49" width="278" height="20" fill="#EEEDFE"/>
+<text x="397" y="59" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#26215C">id</text>
+<text x="530" y="59" dominant-baseline="central" font-family="Arial" font-size="10" fill="#534AB7">serial</text>
+<text x="661" y="59" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#26215C">PK</text>
+<rect x="389" y="69" width="278" height="18" fill="#FAF9FF"/>
+<text x="397" y="78" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#534AB7">room_id</text>
+<text x="530" y="78" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">integer</text>
+<text x="661" y="78" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#534AB7">FK</text>
+<rect x="389" y="87" width="278" height="18" fill="#f8f8f8"/>
+<text x="397" y="96" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">name</text>
+<text x="530" y="96" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">varchar(100)</text>
+<rect x="389" y="105" width="278" height="18" fill="#f2f2f2"/>
+<text x="397" y="114" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">type</text>
+<text x="530" y="114" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">varchar(50)</text>
+<rect x="389" y="123" width="278" height="18" fill="#f8f8f8"/>
+<text x="397" y="132" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">power_rating_watts</text>
+<text x="530" y="132" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">float</text>
+<rect x="389" y="141" width="278" height="18" fill="#f2f2f2"/>
+<text x="397" y="150" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">is_active</text>
+<text x="530" y="150" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">boolean</text>
+<rect x="389" y="159" width="278" height="18" fill="#f8f8f8"/>
+<text x="397" y="168" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">created_at</text>
+<text x="530" y="168" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">timestamp</text>
+
+<rect x="388" y="278" width="280" height="160" rx="6" fill="white" stroke="#185FA5" stroke-width="1.2"/>
+<rect x="389" y="278" width="278" height="29" rx="6" fill="#185FA5"/>
+<rect x="389" y="296" width="278" height="11" fill="#185FA5"/>
+<text x="528" y="293" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">energy_readings</text>
+<rect x="389" y="307" width="278" height="20" fill="#E6F1FB"/>
+<text x="397" y="317" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#042C53">id</text>
+<text x="530" y="317" dominant-baseline="central" font-family="Arial" font-size="10" fill="#185FA5">bigserial</text>
+<text x="661" y="317" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#042C53">PK</text>
+<rect x="389" y="327" width="278" height="18" fill="#EEF6FD"/>
+<text x="397" y="336" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#185FA5">device_id</text>
+<text x="530" y="336" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">integer</text>
+<text x="661" y="336" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#185FA5">FK</text>
+<rect x="389" y="345" width="278" height="18" fill="#f8f8f8"/>
+<text x="397" y="354" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">recorded_at</text>
+<text x="530" y="354" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">timestamp</text>
+<rect x="389" y="363" width="278" height="18" fill="#f2f2f2"/>
+<text x="397" y="372" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">power_watts</text>
+<text x="530" y="372" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">float</text>
+<rect x="389" y="381" width="278" height="18" fill="#f8f8f8"/>
+<text x="397" y="390" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">energy_kwh</text>
+<text x="530" y="390" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">float</text>
+<rect x="389" y="399" width="278" height="18" fill="#f2f2f2"/>
+<text x="397" y="408" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">cost_ron</text>
+<text x="530" y="408" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">float (generated)</text>
+<rect x="389" y="417" width="278" height="18" fill="#f8f8f8"/>
+<text x="397" y="426" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">voltage_v</text>
+<text x="530" y="426" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">float</text>
+
+<rect x="12" y="278" width="280" height="140" rx="6" fill="white" stroke="#BA7517" stroke-width="1.2"/>
+<rect x="13" y="278" width="278" height="29" rx="6" fill="#BA7517"/>
+<rect x="13" y="296" width="278" height="11" fill="#BA7517"/>
+<text x="152" y="293" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">alerts</text>
+<rect x="13" y="307" width="278" height="20" fill="#FAEEDA"/>
+<text x="21" y="317" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#412402">id</text>
+<text x="130" y="317" dominant-baseline="central" font-family="Arial" font-size="10" fill="#BA7517">serial</text>
+<text x="283" y="317" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#412402">PK</text>
+<rect x="13" y="327" width="278" height="18" fill="#FEF8EE"/>
+<text x="21" y="336" dominant-baseline="central" font-family="Arial" font-size="10" font-weight="bold" fill="#BA7517">device_id</text>
+<text x="130" y="336" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">integer</text>
+<text x="283" y="336" text-anchor="end" dominant-baseline="central" font-family="Arial" font-size="9" fill="#BA7517">FK</text>
+<rect x="13" y="345" width="278" height="18" fill="#f8f8f8"/>
+<text x="21" y="354" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">alert_type</text>
+<text x="130" y="354" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">varchar(50)</text>
+<rect x="13" y="363" width="278" height="18" fill="#f2f2f2"/>
+<text x="21" y="372" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">severity</text>
+<text x="130" y="372" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">varchar(20)</text>
+<rect x="13" y="381" width="278" height="18" fill="#f8f8f8"/>
+<text x="21" y="390" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">message</text>
+<text x="130" y="390" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">text</text>
+<rect x="13" y="399" width="278" height="18" fill="#f2f2f2"/>
+<text x="21" y="408" dominant-baseline="central" font-family="Arial" font-size="10" fill="#333">resolved</text>
+<text x="130" y="408" dominant-baseline="central" font-family="Arial" font-size="10" fill="#888">boolean</text>
+
+<line x1="292" y1="80" x2="388" y2="80" stroke="#888" stroke-width="1.2"/>
+<circle cx="292" cy="80" r="3" fill="none" stroke="#888" stroke-width="1"/>
+<line x1="384" y1="75" x2="388" y2="80" stroke="#888" stroke-width="1.2"/>
+<line x1="384" y1="85" x2="388" y2="80" stroke="#888" stroke-width="1.2"/>
+<text x="289" y="76" text-anchor="end" font-family="Arial" font-size="10" fill="#555">1</text>
+<text x="391" y="76" font-family="Arial" font-size="10" fill="#555">0</text>
+<text x="340" y="72" text-anchor="middle" font-family="Arial" font-size="9" fill="#aaa" font-style="italic">contine</text>
+
+<line x1="528" y1="178" x2="528" y2="278" stroke="#888" stroke-width="1.2"/>
+<circle cx="528" cy="178" r="3" fill="none" stroke="#888" stroke-width="1"/>
+<line x1="523" y1="274" x2="528" y2="278" stroke="#888" stroke-width="1.2"/>
+<line x1="533" y1="274" x2="528" y2="278" stroke="#888" stroke-width="1.2"/>
+<text x="534" y="212" font-family="Arial" font-size="10" fill="#555">1</text>
+<text x="534" y="268" font-family="Arial" font-size="10" fill="#555">0</text>
+<text x="548" y="232" font-family="Arial" font-size="9" fill="#aaa" font-style="italic">genereaza</text>
+
+<line x1="388" y1="336" x2="292" y2="336" stroke="#888" stroke-width="1.2"/>
+<circle cx="388" cy="336" r="3" fill="none" stroke="#888" stroke-width="1"/>
+<line x1="296" y1="331" x2="292" y2="336" stroke="#888" stroke-width="1.2"/>
+<line x1="296" y1="341" x2="292" y2="336" stroke="#888" stroke-width="1.2"/>
+<text x="385" y="330" text-anchor="end" font-family="Arial" font-size="10" fill="#555">1</text>
+<text x="289" y="274" text-anchor="end" font-family="Arial" font-size="10" fill="#555">0</text>
+<text x="310" y="262" text-anchor="middle" font-family="Arial" font-size="9" fill="#aaa" font-style="italic">declanseaza</text>
+
+</svg>

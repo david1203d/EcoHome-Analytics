@@ -1,0 +1,91 @@
+<svg width="680" height="420" viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg">
+<title>Diagrama Clase - EcoHome Analytics</title>
+<rect width="680" height="420" fill="white"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- ===== ROOM ===== -->
+<rect x="12" y="25" width="178" height="145" rx="6" fill="white" stroke="#1D9E75" stroke-width="1.2"/>
+<rect x="13" y="25" width="176" height="31" rx="6" fill="#1D9E75"/>
+<rect x="13" y="44" width="176" height="12" fill="#1D9E75"/>
+<text x="101" y="41" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">Room</text>
+<rect x="13" y="56" width="176" height="91" fill="#f6f6f6"/>
+<text x="21" y="71"  font-family="Arial" font-size="10" fill="#444">+ id : int</text>
+<text x="21" y="89"  font-family="Arial" font-size="10" fill="#444">+ name : str</text>
+<text x="21" y="107" font-family="Arial" font-size="10" fill="#444">+ floor : int</text>
+<text x="21" y="125" font-family="Arial" font-size="10" fill="#444">+ area_sqm : float</text>
+<line x1="13" y1="147" x2="189" y2="147" stroke="#ddd" stroke-width="0.8"/>
+<rect x="13" y="147" width="176" height="22" fill="#eaf7f2" rx="0"/>
+<text x="21" y="158" dominant-baseline="central" font-family="Arial" font-size="10" fill="#0F6E56">+ to_dict()</text>
+
+<!-- ===== DEVICE ===== -->
+<rect x="215" y="25" width="195" height="181" rx="6" fill="white" stroke="#534AB7" stroke-width="1.2"/>
+<rect x="216" y="25" width="193" height="31" rx="6" fill="#534AB7"/>
+<rect x="216" y="44" width="193" height="12" fill="#534AB7"/>
+<text x="312" y="41" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">Device</text>
+<rect x="216" y="56" width="193" height="109" fill="#f6f6f6"/>
+<text x="224" y="71"  font-family="Arial" font-size="10" fill="#444">+ id : int</text>
+<text x="224" y="89"  font-family="Arial" font-size="10" fill="#444">+ room_id : int  (FK)</text>
+<text x="224" y="107" font-family="Arial" font-size="10" fill="#444">+ name : str</text>
+<text x="224" y="125" font-family="Arial" font-size="10" fill="#444">+ type : str</text>
+<text x="224" y="143" font-family="Arial" font-size="10" fill="#444">+ power_rating_watts : float</text>
+<text x="224" y="161" font-family="Arial" font-size="10" fill="#444">+ is_active : bool</text>
+<line x1="216" y1="183" x2="409" y2="183" stroke="#ddd" stroke-width="0.8"/>
+<rect x="216" y="183" width="193" height="22" fill="#EEEDFE"/>
+<text x="224" y="194" dominant-baseline="central" font-family="Arial" font-size="10" fill="#3C3489">+ to_dict()</text>
+
+<!-- ===== ENERGY READING ===== -->
+<rect x="450" y="25" width="218" height="181" rx="6" fill="white" stroke="#185FA5" stroke-width="1.2"/>
+<rect x="451" y="25" width="216" height="31" rx="6" fill="#185FA5"/>
+<rect x="451" y="44" width="216" height="12" fill="#185FA5"/>
+<text x="559" y="41" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">EnergyReading</text>
+<rect x="451" y="56" width="216" height="127" fill="#f6f6f6"/>
+<text x="459" y="71"  font-family="Arial" font-size="10" fill="#444">+ id : int</text>
+<text x="459" y="89"  font-family="Arial" font-size="10" fill="#444">+ device_id : int  (FK)</text>
+<text x="459" y="107" font-family="Arial" font-size="10" fill="#444">+ recorded_at : datetime</text>
+<text x="459" y="125" font-family="Arial" font-size="10" fill="#444">+ power_watts : float</text>
+<text x="459" y="143" font-family="Arial" font-size="10" fill="#444">+ energy_kwh : float</text>
+<text x="459" y="161" font-family="Arial" font-size="10" fill="#444">+ cost_ron : float</text>
+<line x1="451" y1="183" x2="667" y2="183" stroke="#ddd" stroke-width="0.8"/>
+<rect x="451" y="183" width="216" height="22" fill="#E6F1FB"/>
+<text x="459" y="194" dominant-baseline="central" font-family="Arial" font-size="10" fill="#0C447C">+ to_dict()</text>
+
+<!-- ===== ALERT ===== -->
+<rect x="215" y="258" width="195" height="163" rx="6" fill="white" stroke="#BA7517" stroke-width="1.2"/>
+<rect x="216" y="258" width="193" height="31" rx="6" fill="#BA7517"/>
+<rect x="216" y="277" width="193" height="12" fill="#BA7517"/>
+<text x="312" y="274" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="12" font-weight="bold" fill="white">Alert</text>
+<rect x="216" y="289" width="193" height="109" fill="#f6f6f6"/>
+<text x="224" y="304" font-family="Arial" font-size="10" fill="#444">+ id : int</text>
+<text x="224" y="322" font-family="Arial" font-size="10" fill="#444">+ device_id : int  (FK)</text>
+<text x="224" y="340" font-family="Arial" font-size="10" fill="#444">+ alert_type : str</text>
+<text x="224" y="358" font-family="Arial" font-size="10" fill="#444">+ severity : str</text>
+<text x="224" y="376" font-family="Arial" font-size="10" fill="#444">+ resolved : bool</text>
+<line x1="216" y1="398" x2="409" y2="398" stroke="#ddd" stroke-width="0.8"/>
+<rect x="216" y="398" width="193" height="22" fill="#FAEEDA"/>
+<text x="224" y="409" dominant-baseline="central" font-family="Arial" font-size="10" fill="#633806">+ to_dict()</text>
+
+<!-- ===== RELATIONSHIPS ===== -->
+
+<!-- Room 1 --> Device -->
+<line x1="190" y1="113" x2="215" y2="113" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+<text x="187" y="108" text-anchor="end" font-family="Arial" font-size="10" fill="#555">1</text>
+<text x="218" y="108" font-family="Arial" font-size="10" fill="#555">0</text>
+<text x="202" y="130" text-anchor="middle" font-family="Arial" font-size="9" fill="#aaa" font-style="italic">contine</text>
+
+<!-- Device 1 --> EnergyReading -->
+<line x1="410" y1="113" x2="450" y2="113" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+<text x="407" y="108" text-anchor="end" font-family="Arial" font-size="10" fill="#555">1</text>
+<text x="453" y="108" font-family="Arial" font-size="10" fill="#555">0</text>
+<text x="430" y="130" text-anchor="middle" font-family="Arial" font-size="9" fill="#aaa" font-style="italic">genereaza</text>
+
+<!-- Device 1 --> Alert -->
+<line x1="312" y1="206" x2="312" y2="258" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+<text x="318" y="222" font-family="Arial" font-size="10" fill="#555">1</text>
+<text x="318" y="250" font-family="Arial" font-size="10" fill="#555">0</text>
+<text x="333" y="234" font-family="Arial" font-size="9" fill="#aaa" font-style="italic">declanseaza</text>
+
+</svg>
