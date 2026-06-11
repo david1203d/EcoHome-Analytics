@@ -147,3 +147,7 @@ INSERT INTO devices (room_id, name, type, brand, power_rating_watts, installed_a
     (5, 'PC Desktop',           'appliance',     'Custom',   350.0, '2023-01-20'),
     (5, 'Monitor 27"',          'entertainment', 'LG',       45.0, '2023-01-20'),
     (5, 'Lampa birou',          'lighting',      'Philips',  10.0, '2023-01-20');
+
+-- CREATE UNIQUE INDEX uq_readings_device_time ON energy_readings(device_id, recorded_at);
+-- [M3 FIX] Asigura unicitatea pentru idempotenta totala
+CREATE UNIQUE INDEX IF NOT EXISTS uq_readings_device_time ON energy_readings(device_id, recorded_at);

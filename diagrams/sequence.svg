@@ -1,0 +1,99 @@
+<svg id="graph-5" viewBox="0 0 1200 900" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); background-color: rgb(2, 8, 23);" role="graphics-document document" aria-roledescription="sequence" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style>
+    .actor { stroke: #ccccff; fill: #1f2937; font-family: 'Segoe UI', sans-serif; }
+    text.actor-text { fill: #ffffff; stroke: none; font-size: 14px; }
+    .messageLine0 { stroke: #ffffff; stroke-width: 1.5; stroke-dasharray: none; }
+    .messageLine1 { stroke: #aaaaaa; stroke-width: 1.5; stroke-dasharray: 3,3; }
+    .messageText { fill: #ffffff; stroke: none; font-family: 'Segoe UI', sans-serif; font-size: 13px; }
+    .note { fill: #111827; stroke: #4b5563; }
+    .noteText { fill: #e5e7eb; font-family: 'Segoe UI', sans-serif; font-size: 12px; }
+    .loopText { fill: #ffffff; }
+    .loopLine { stroke: #ef4444; stroke-width: 2; }
+    polygon { fill: #ffffff; stroke: #ffffff; }
+    .sequence-number { fill: #111827; font-weight: bold; }
+  </style>
+
+  <line x1="150" y1="80" x2="150" y2="820" class="messageLine1" />
+  <line x1="450" y1="80" x2="450" y2="820" class="messageLine1" />
+  <line x1="750" y1="80" x2="750" y2="820" class="messageLine1" />
+  <line x1="1050" y1="80" x2="1050" y2="820" class="messageLine1" />
+
+  <rect x="50" y="30" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="150" y="55" text-anchor="middle" class="actor-text">Simulator IoT (Script)</text>
+
+  <rect x="350" y="30" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="450" y="55" text-anchor="middle" class="actor-text">Flask API (app.py)</text>
+
+  <rect x="650" y="30" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="750" y="55" text-anchor="middle" class="actor-text">PostgreSQL DB</text>
+
+  <rect x="950" y="30" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="1050" y="55" text-anchor="middle" class="actor-text">Web Dashboard</text>
+
+  <line x1="150" y1="120" x2="445" y2="120" class="messageLine0" />
+  <polygon points="445,116 450,120 445,124" />
+  <text x="160" y="112" class="messageText">1. POST /api/readings (JSON payload)</text>
+
+  <rect x="300" y="150" width="300" height="45" rx="3" ry="3" class="note" />
+  <text x="310" y="168" class="noteText">[M4 FIX] Validare Input strictă</text>
+  <text x="310" y="184" class="noteText">(Tipuri corecte, valori non-negative)</text>
+
+  <line x1="450" y1="230" x2="745" y2="230" class="messageLine0" />
+  <polygon points="745,226 750,230 745,234" />
+  <text x="460" y="222" class="messageText">2. Selectare dispozitiv (Device.query.get)</text>
+
+  <line x1="750" y1="270" x2="455" y2="270" class="messageLine1" />
+  <polygon points="455,266 450,270 455,274" />
+  <text x="460" y="262" class="messageText">3. Returnează putere nominală</text>
+
+  <line x1="450" y1="320" x2="745" y2="320" class="messageLine0" />
+  <polygon points="745,316 750,320 745,324" />
+  <text x="460" y="312" class="messageText">4. INSERT INTO energy_readings [M3 ON CONFLICT DO NOTHING]</text>
+
+  <line x1="750" y1="360" x2="455" y2="360" class="messageLine1" />
+  <polygon points="455,356 450,360 455,364" />
+  <text x="460" y="352" class="messageText">5. Confirmare inserare / Idempotență asigurată</text>
+
+  <rect x="320" y="410" width="500" height="130" fill="none" stroke="#ef4444" stroke-width="1" stroke-dasharray="4" />
+  <text x="330" y="430" class="messageText" fill="#ef4444" style="font-weight:bold;">[ALT] Consumul depășește limita de siguranță (M2)</text>
+  
+  <line x1="450" y1="470" x2="745" y2="470" class="messageLine0" stroke="#ef4444" />
+  <polygon points="745,466 750,470 745,474" style="fill:#ef4444; stroke:#ef4444;" />
+  <text x="460" y="462" class="messageText">6. INSERT INTO alerts (Mesaj dinamic 1.5x)</text>
+
+  <line x1="750" y1="510" x2="455" y2="510" class="messageLine1" />
+  <polygon points="455,506 450,510 455,514" />
+  <text x="460" y="502" class="messageText">7. Alertă salvată ca activă</text>
+
+  <line x1="450" y1="570" x2="155" y2="570" class="messageLine1" />
+  <polygon points="155,566 150,570 155,574" />
+  <text x="160" y="562" class="messageText">8. HTTP 201 Created (Răspuns JSON)</text>
+
+  <line x1="1050" y1="630" x2="455" y2="630" class="messageLine0" />
+  <polygon points="455,626 450,630 455,634" />
+  <text x="460" y="622" class="messageText">9. GET /api/summary &amp; /api/alerts (Z-Score, Carbon)</text>
+
+  <line x1="450" y1="670" x2="745" y2="670" class="messageLine0" />
+  <polygon points="745,666 750,670 745,674" />
+  <text x="460" y="662" class="messageText">10. Interogări agregate (SUM, COUNT, CTE Trends)</text>
+
+  <line x1="750" y1="710" x2="455" y2="710" class="messageLine1" />
+  <polygon points="455,706 450,710 455,714" />
+  <text x="460" y="706" class="messageText">11. Rezultate din baza de date</text>
+
+  <line x1="450" y1="760" x2="1050" y2="760" class="messageLine1" />
+  <polygon points="1045,756 1050,760 1045,764" />
+  <text x="460" y="752" class="messageText">12. HTTP 200 OK (JSON cu monedă/tarife uniforme 1.29 din Config)</text>
+
+  <rect x="50" y="830" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="150" y="855" text-anchor="middle" class="actor-text">Simulator IoT (Script)</text>
+
+  <rect x="350" y="830" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="450" y="855" text-anchor="middle" class="actor-text">Flask API (app.py)</text>
+
+  <rect x="650" y="830" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="750" y="855" text-anchor="middle" class="actor-text">PostgreSQL DB</text>
+
+  <rect x="950" y="830" width="200" height="40" rx="5" ry="5" class="actor" />
+  <text x="1050" y="855" text-anchor="middle" class="actor-text">Web Dashboard</text>
+</svg>

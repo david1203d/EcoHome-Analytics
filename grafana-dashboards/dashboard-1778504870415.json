@@ -63,7 +63,7 @@
                       "group": "grafana-postgresql-datasource",
                       "version": "v0",
                       "datasource": {
-                        "name": "cflqpdzmoag3ka"
+                        "name": "${datasource}"
                       },
                       "spec": {
                         "dataset": "smart_home",
@@ -170,7 +170,7 @@
                       "group": "grafana-postgresql-datasource",
                       "version": "v0",
                       "datasource": {
-                        "name": "cflqpdzmoag3ka"
+                        "name": "${datasource}"
                       },
                       "spec": {
                         "dataset": "smart_home",
@@ -311,7 +311,7 @@
                       "group": "grafana-postgresql-datasource",
                       "version": "v0",
                       "datasource": {
-                        "name": "cflqpdzmoag3ka"
+                        "name": "${datasource}"
                       },
                       "spec": {
                         "dataset": "smart_home",
@@ -413,7 +413,7 @@
                       "group": "grafana-postgresql-datasource",
                       "version": "v0",
                       "datasource": {
-                        "name": "cflqpdzmoag3ka"
+                        "name": "${datasource}"
                       },
                       "spec": {
                         "dataset": "smart_home",
@@ -541,7 +541,7 @@
                       "group": "grafana-postgresql-datasource",
                       "version": "v0",
                       "datasource": {
-                        "name": "cflqpdzmoag3ka"
+                        "name": "${datasource}"
                       },
                       "spec": {
                         "dataset": "smart_home",
@@ -700,7 +700,7 @@
     "links": [],
     "liveNow": false,
     "preload": false,
-    "tags": [],
+    "tags": ["licenta", "postgres", "smart-home", "analytics"],
     "timeSettings": {
       "timezone": "browser",
       "from": "now-6h",
@@ -721,8 +721,22 @@
       "hideTimepicker": false,
       "fiscalYearStartMonth": 0
     },
-    "title": "New dashboard",
-    "variables": [],
+    "title": "EcoHome Analytics — Monitorizare și Eficiență Energetică",
+    "variables": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Data Source",
+        "name": "datasource",
+        "options": [],
+        "query": "postgres",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ],
     "preferences": {
       "layout": {
         "kind": "GridLayout",

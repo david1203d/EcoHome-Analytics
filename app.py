@@ -16,8 +16,13 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # UPDATE DRIVER PENTRU PYTHON 3.13+ (Psycopg 3) ---
+    db_url = app.config.get("SQLALCHEMY_DATABASE_URI")
+    if db_url and db_url.startswith("postgresql://"):
+        app.config["SQLALCHEMY_DATABASE_URI"] = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
+
     db.init_app(app)
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:5000", "http://localhost:5000"]}})
 
     # ------------------------------------------------------------------
     # Dashboard principal
@@ -68,7 +73,7 @@ def create_app():
                            EnergyReading.recorded_at >= first_of_month)
                    .scalar() or 0.0)
         data["monthly_kwh"]      = round(monthly, 3)
-        data["monthly_cost_ron"] = round(monthly * 1.19, 2)
+        data["monthly_cost_ron"] = round(monthly * Config.TARIF_RON_PER_KWH, 2)
         return jsonify(data)
 
     # ------------------------------------------------------------------
@@ -105,36 +110,55 @@ def create_app():
         data = request.get_json()
         if not data:
             return jsonify({"error": "JSON invalid"}), 400
+            
         for f in ["device_id", "power_watts"]:
             if f not in data:
                 return jsonify({"error": f"Camp lipsa: {f}"}), 400
 
-        device = Device.query.get(data["device_id"])
+        # [M4 FIX] Validare tipuri de date și valori negative (Anti-Crash 500)
+        try:
+            device_id = int(data["device_id"])
+            power_watts = float(data["power_watts"])
+            if power_watts < 0:
+                return jsonify({"error": "Puterea consumata nu poate fi negativa"}), 400
+        except (ValueError, TypeError):
+            return jsonify({"error": "device_id si power_watts trebuie sa fie numere valide"}), 400
+
+        device = Device.query.get(device_id)
         if not device:
             return jsonify({"error": "Dispozitiv negasit"}), 404
 
-        interval_h = data.get("interval_minutes", 10) / 120.0
+        interval_h = data.get("interval_minutes", 10) / 60.0
         reading = EnergyReading(
-            device_id   = data["device_id"],
-            power_watts = data["power_watts"],
-            energy_kwh  = data["power_watts"] / 1000.0 * interval_h,
+            device_id   = device_id,
+            power_watts = power_watts,
+            energy_kwh  = power_watts / 1000.0 * interval_h,
             voltage_v   = data.get("voltage_v", 230.0),
             recorded_at = datetime.utcnow(),
         )
         db.session.add(reading)
 
-        if data["power_watts"] > device.power_rating_watts * 1.5:
+        if power_watts > device.power_rating_watts * 1.5:
+            limit_watts = round(device.power_rating_watts * 1.5, 1)
+            
             db.session.add(Alert(
                 device_id  = device.id,
                 alert_type = "high_consumption",
                 severity   = "warning",
-                message    = (f"{device.name} consuma {data['power_watts']}W, "
-                              f"peste puterea nominala de {device.power_rating_watts}W"),
-                threshold  = device.power_rating_watts * 1.5,
-                actual_val = data["power_watts"],
+                message    = (f"{device.name} consuma {power_watts}W, "
+                            f"depasind limita de siguranta de {limit_watts}W "
+                            f"(1.5x puterea nominala de {device.power_rating_watts}W)"),
+                threshold  = limit_watts,
+                actual_val = power_watts,
             ))
 
-        db.session.commit()
+        # [M3 FIX] Idempotență garantată prin blocarea erorilor de index unic
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return jsonify({"status": "ignored", "message": "Citire duplicata ignorata cu succes (Idempotent)"}), 200
+
         return jsonify(reading.to_dict()), 201
 
     # ------------------------------------------------------------------
@@ -153,10 +177,11 @@ def create_app():
         kwh_7d  = kwh_since(now - timedelta(days=7))
         kwh_mo  = kwh_since(now.replace(day=1, hour=0, minute=0, second=0))
 
+        t = Config.TARIF_RON_PER_KWH
         return jsonify({
-            "last_24h":   {"kwh": kwh_24h, "cost_ron": round(kwh_24h * 1.19, 2)},
-            "last_7d":    {"kwh": kwh_7d,  "cost_ron": round(kwh_7d  * 1.19, 2)},
-            "this_month": {"kwh": kwh_mo,  "cost_ron": round(kwh_mo  * 1.19, 2)},
+            "last_24h":   {"kwh": kwh_24h, "cost_ron": round(kwh_24h * t, 2)},
+            "last_7d":    {"kwh": kwh_7d,  "cost_ron": round(kwh_7d  * t, 2)},
+            "this_month": {"kwh": kwh_mo,  "cost_ron": round(kwh_mo  * t, 2)},
             "total_devices": Device.query.filter_by(is_active=True).count(),
             "active_alerts": Alert.query.filter_by(resolved=False).count(),
             "generated_at":  now.isoformat(),
@@ -181,7 +206,7 @@ def create_app():
         return jsonify([{
             "room":     r.room,
             "kwh":      round(r.kwh, 3),
-            "cost_ron": round(r.kwh * 1.19, 2),
+            "cost_ron": round(r.kwh * Config.TARIF_RON_PER_KWH, 2),
             "devices":  r.devices,
         } for r in rows])
 
@@ -203,7 +228,7 @@ def create_app():
         return jsonify([{
             "type":     r.type,
             "kwh":      round(r.kwh, 3),
-            "cost_ron": round(r.kwh * 1.19, 2),
+            "cost_ron": round(r.kwh * Config.TARIF_RON_PER_KWH, 2),
             "devices":  r.devices,
         } for r in rows])
 
@@ -542,7 +567,7 @@ def create_app():
                     "description": f"Aceasta saptamana: {round(kwh_this_week, 1)} kWh vs "
                                 f"saptamana trecuta: {round(kwh_last_week, 1)} kWh.",
                     "action":      "Identifica ce dispozitive au fost folosite mai mult si ajusteaza.",
-                    "saving_ron":  round(abs(kwh_this_week - kwh_last_week) * 1.29 * 0.3, 2),
+                    "saving_ron":  round(abs(kwh_this_week - kwh_last_week) * Config.TARIF_RON_PER_KWH * 0.3, 2),
                 })
             elif delta_pct < -10:
                 recs.append({
@@ -564,7 +589,7 @@ def create_app():
                 "description": f"Echivalent cu {round(co2_kg / 0.21, 0):.0f} km condusi cu masina.",
                 "action":      "Reducand consumul cu 20% elimini emisiile a "
                             f"{round(co2_kg * 0.2 / 21.77, 2)} copaci pe an.",
-                "saving_ron":  round(total_kwh * 0.2 * 1.29, 2),
+                "saving_ron":  round(total_kwh * 0.2 * Config.TARIF_RON_PER_KWH, 2),
             })
 
         recs.sort(key=lambda x: {"high": 0, "medium": 1, "low": 2}[x["priority"]])
@@ -637,6 +662,6 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    with app.app_context():
-        db.create_all()
+    # db.create_all() intentionally removed — sql/schema.sql este single source of truth pentru DDL
     app.run(debug=True, port=5000)
+    

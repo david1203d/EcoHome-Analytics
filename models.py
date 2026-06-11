@@ -4,6 +4,7 @@ Reflecta structura din schema.sql
 """
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from config import Config
 
 db = SQLAlchemy()
 
@@ -78,7 +79,7 @@ class EnergyReading(db.Model):
             "recorded_at": self.recorded_at.isoformat(),
             "power_watts": round(self.power_watts, 2),
             "energy_kwh":  round(self.energy_kwh, 4),
-            "cost_ron":    round(self.energy_kwh * 1.29, 4),
+            "cost_ron":    round(self.energy_kwh * Config.TARIF_RON_PER_KWH, 4),
         }
 
 
